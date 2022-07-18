@@ -8,19 +8,20 @@ on:
   workflow_dispatch:
     inputs:
       commit:
-        required: true
+        required: false
+        default: 5afa96dadfe803e8a058d6ede0c9c3987405b8d8
 jobs:
   test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    env: 
-      VV8: "$GITHUB_WORKSPACE/visiblev8"
-      WD: "$GITHUB_WORKSPACE/chrome"
+#     env: 
+#       VV8: "$GITHUB_WORKSPACE/visiblev8"
+#       WD: "$GITHUB_WORKSPACE/chrome"
     steps:
     - run: echo $VV8
     - name: Checkout repository
       uses: actions/checkout@v2
-    - run: mkdir $WD
+    - run: mkdir $GITHUB_WORKSPACE/chrome
     - name: Build the chrome
-      run: $VV/builder/tool.py -d $WD checkout 5afa96dadfe803e8a058d6ede0c9c3987405b8d8
+      run: $GITHUB_WORKSPACE/builder/tool.py -d $GITHUB_WORKSPACE/chrome checkout ${github.inputs.commit}
       
