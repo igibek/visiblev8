@@ -23,5 +23,5 @@ jobs:
       uses: actions/checkout@v2
     - run: mkdir $GITHUB_WORKSPACE/chrome
     - name: Build the chrome
-      run: $GITHUB_WORKSPACE/builder/tool.py -d $GITHUB_WORKSPACE/chrome checkout ${github.inputs.commit}
+      run: python3 $GITHUB_WORKSPACE/builder/tool.py -d $GITHUB_WORKSPACE/chrome checkout ${inputs.commit}
       
