@@ -11,17 +11,24 @@ on:
         required: false
         default: 5afa96dadfe803e8a058d6ede0c9c3987405b8d8
 jobs:
-  test:
+  build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-#     env: 
-#       VV8: "$GITHUB_WORKSPACE/visiblev8"
-#       WD: "$GITHUB_WORKSPACE/chrome"
+    runs-on: vv8build
+    env: 
+      VV8: ${{github.workspace}}/visiblev8
+      WD: ${{github.workspace}}/chrome
     steps:
-    - run: echo $VV8
     - name: Checkout repository
-      uses: actions/checkout@v2
-    - run: mkdir $GITHUB_WORKSPACE/chrome
+      uses: actions/checkout@v3
+      with:
+        path: visiblev8
+    - run: mkdir ${{env.WD}}
     - name: Build the chrome
-      run: python3 $GITHUB_WORKSPACE/builder/tool.py -d $GITHUB_WORKSPACE/chrome checkout ${{inputs.commit}}
+      run: python3 ${{env.VV8}}/builder/tool.py -d ${{env.WD}} checkout ${{inputs.commit}}
+    - name: Patch the Chromium
+      run: patch -p1 <${{env.VV8}}/patches/5afa96dadfe803e8a058/trace-apis.diff
+      working-directory: ${{env.WD}}/src/v8
+    - name: Build the chromium
+      run: ${{env.VV8}}/builder/tool.py -d ${{env.WD}} build @std
+      shell: python
       
